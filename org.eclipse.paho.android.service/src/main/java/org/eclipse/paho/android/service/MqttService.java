@@ -622,6 +622,7 @@ public class MqttService extends Service implements MqttTraceHandler {
 
     // create somewhere to buffer received messages until
     // we know that they have been passed to the application
+    // messageStore = new DatabaseMessageStore(this, this);
     messageStore = new MemoryMessageStore(this);
 	}
 

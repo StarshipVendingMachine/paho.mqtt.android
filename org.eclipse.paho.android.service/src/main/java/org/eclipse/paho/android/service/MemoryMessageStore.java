@@ -18,6 +18,7 @@ package org.eclipse.paho.android.service;
 import java.util.Iterator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.ArrayList;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
@@ -40,13 +41,15 @@ class MemoryMessageStore implements MessageStore {
 
 	private MqttTraceHandler traceHandler = null;
 
-	private HashMap<String, MemStoredData> memDb = null;
+	// private HashMap<String, MemStoredData> memDb = null;
+	private ArrayList<StoredMessage> memDb = null;
 
 	public MemoryMessageStore(MqttService service) {
 		this.traceHandler = service;
 
 		// Open message database
-		memDb = new HashMap<String, MemStoredData>();
+		// memDb = new HashMap<String, MemStoredData>();
+		memDb = new ArrayList<StoredMessage>();
 
 		traceHandler.traceDebug(TAG, "MemoryMessageStore<init> complete");
 	}
@@ -57,14 +60,22 @@ class MemoryMessageStore implements MessageStore {
 
 		String messageId = java.util.UUID.randomUUID().toString();
 		MemStoredData data = new MemStoredData(messageId, topic, message);
-		memDb.put(messageId, data);
+		//memDb.put(messageId, data);
+		memDb.add(data);
 		return messageId;
 	}
 
 	@Override
 	public boolean discardArrived(String clientHandle, String id) {
-		memDb.remove(id);
-		return true;
+		// memDb.remove(id);
+		for (StoredMessage i : memDb) {
+			if (i.getMessageId() == id) {
+				memDb.remove(i);
+				return true;
+			}
+		}
+		// return true;
+		return false;
 	}
 
 	/**
@@ -77,11 +88,12 @@ class MemoryMessageStore implements MessageStore {
 	 */
 	@Override
 	public Iterator<StoredMessage> getAllArrivedMessages(final String clientHandle) {
-		HashSet<StoredMessage> messages = new HashSet();
-		for (String k: memDb.keySet()) {
-			messages.add(memDb.get(k));
-		}
-		return messages.iterator();
+		// HashSet<StoredMessage> messages = new HashSet();
+		// for (String k: memDb.keySet()) {
+		// 	messages.add(memDb.get(k));
+		// }
+		// return messages.iterator();
+		return memDb.iterator();
   }
 
 	@Override
