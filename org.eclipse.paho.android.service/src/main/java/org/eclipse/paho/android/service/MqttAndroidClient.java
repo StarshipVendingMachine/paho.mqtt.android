@@ -1655,6 +1655,9 @@ public class MqttAndroidClient extends BroadcastReceiver implements
 	 * @param bufferOpts the DisconnectedBufferOptions
 	 */
 	public void setBufferOpts(DisconnectedBufferOptions bufferOpts) {
+		if (clientHandle == null) {
+			clientHandle = mqttService.getClient(serverURI, clientId, myContext.getApplicationInfo().packageName, persistence);
+		}
 		mqttService.setBufferOpts(clientHandle, bufferOpts);
 	}
 

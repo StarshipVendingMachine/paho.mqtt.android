@@ -300,7 +300,7 @@ public class MqttService extends Service implements MqttTraceHandler {
    */
   public String getClient(String serverURI, String clientId, String contextId, MqttClientPersistence persistence) {
     String clientHandle = serverURI + ":" + clientId+":"+contextId;
-    if (!connections.containsKey(clientHandle)) {
+    if (!connections.containsKey(clientHandle) || connections.get(clientHandle) == null) {
       MqttConnection client = new MqttConnection(this, serverURI,
           clientId, persistence, clientHandle);
       connections.put(clientHandle, client);
